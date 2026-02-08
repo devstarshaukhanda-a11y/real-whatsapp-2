@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WhatsApp Web – Verify OTP</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+body{
+  background:#fef7f0;
+  min-height:100vh;
+}
+
+/* TOP LEFT */
+.wa-header{
+  padding:20px 30px;
+  font-size:26px;
+  font-weight:600;
+  color:#25d366;
+}
+
+/* CENTER */
+.wrapper{
+  display:flex;
+  justify-content:center;
+  margin-top:60px;
+}
+
+.box{
+  background:#fff;
+  padding:40px;
+  width:420px;
+  border-radius:16px;
+  box-shadow:0 4px 20px rgba(0,0,0,.1);
+  text-align:center;
+}
+
+.box h2{
+  margin-bottom:8px;
+}
+
+.box p{
+  font-size:14px;
+  color:#555;
+  margin-bottom:22px;
+}
+
+input{
+  width:100%;
+  padding:14px;
+  font-size:20px;
+  text-align:center;
+  letter-spacing:6px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+button{
+  margin-top:24px;
+  width:100%;
+  padding:14px;
+  background:#25d366;
+  color:#fff;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#20c05c;
+}
+
+/* EXTRA LINKS */
+.otp-links{
+  margin-top:16px;
+  font-size:14px;
+  color:#555;
+}
+
+.otp-links a{
+  color:#25d366;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.change{
+  display:block;
+  margin-top:14px;
+}
+
+/* FOOTER */
+.footer-text{
+  text-align:center;
+  margin-top:40px;
+  font-size:13px;
+  color:#777;
+}
+
+/* WRONG OTP ERROR */
+.box.error input{
+  border:2px solid #e53935;
+  animation: shake 0.35s;
+}
+
+/* SHAKE EFFECT */
+@keyframes shake{
+  0%{ transform: translateX(0); }
+  25%{ transform: translateX(-5px); }
+  50%{ transform: translateX(5px); }
+  75%{ transform: translateX(-5px); }
+  100%{ transform: translateX(0); }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="wa-header">WhatsApp</div>
+
+<!-- CENTER -->
+<div class="wrapper">
+  <div class="box">
+
+    <h2>Enter OTP</h2>
+    <p>Enter the 6-digit code sent to your phone.</p>
+
+   <input
+  id="otp"
+  maxlength="6"
+  placeholder="••••••"
+  autofocus
+  inputmode="numeric"
+  oninput="handleOTPInput(this)"
+>
+
+
+    <button onclick="verify()">Verify</button>
+
+    <div class="otp-links">
+      Didn’t receive code?
+      <a href="#" onclick="resendOTP()">Resend OTP (<span id="timer">26</span>s)</a>
+
+      <a href="phone-number.html" class="change">
+        ← Change phone number
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer-text">
+  Your personal messages are end-to-end encrypted
+</div>
+
+<script>
+
+  function generateOTP(){
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+function handleOTPInput(input){
+  input.value = input.value.replace(/\D/g, "");
+
+  if(input.value.length === 6){
+    verify();
+  }
+}
+
+/* TIMER */
+let timeLeft = 26;
+const timerEl = document.getElementById("timer");
+
+setInterval(() => {
+  if(timeLeft > 0){
+    timeLeft--;
+    timerEl.innerText = timeLeft;
+  }
+}, 1000);
+
+/* RESEND */
+function resendOTP(){
+  const newOTP = generateOTP();
+
+  localStorage.setItem("otp", newOTP);
+  alert("OTP resent: " + newOTP);
+
+  timeLeft = 26;
+}
+
+
+/* VERIFY (SAME LOGIC) */
+function verify(){
+  const box = document.querySelector(".box");
+  const input = document.getElementById("otp");
+
+  const entered = input.value.trim();
+  const real = localStorage.getItem("otp");
+  const phone = localStorage.getItem("tempPhone");
+
+  box.classList.remove("error");
+
+  if (!entered || entered.length < 6) {
+    return;
+  }
+
+  if(entered === real && phone){
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("phone", phone);
+
+    localStorage.removeItem("otp");
+    localStorage.removeItem("tempPhone");
+
+    window.location.href = "index.html";
+  }else{
+    box.classList.add("error"); // 🔴 red + shake
+    input.value = "";
+    input.focus();
+  }
+}
+
+</script>
+
+</body>
+</html>

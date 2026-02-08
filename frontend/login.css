@@ -1,0 +1,113 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI", Arial, sans-serif;
+}
+
+body{
+  background:#fff6ec;
+}
+
+/* Center container */
+.container{
+  display:flex;
+  justify-content:center;
+  margin-top:80px;
+}
+
+/* Card */
+.card{
+  background:#ffffff;
+  width:420px;
+  padding:36px;
+  border-radius:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.12);
+  text-align:center;
+}
+
+/* single card fix */
+.card.single{
+  margin:auto;
+}
+
+/* Headings */
+.card h2{
+  font-size:22px;
+  margin-bottom:8px;
+}
+
+.card p{
+  font-size:14px;
+  color:#555;
+  margin-bottom:24px;
+}
+
+/* Label */
+label{
+  display:block;
+  text-align:left;
+  font-size:13px;
+  margin-bottom:6px;
+  color:#444;
+}
+
+/* Inputs */
+select,
+input{
+  width:100%;
+  padding:14px;
+  font-size:15px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  outline:none;
+  margin-bottom:16px;
+}
+
+input{
+  background:#eef4ff;
+}
+
+/* Button */
+button{
+  width:100%;
+  padding:14px;
+  background:#25d366;
+  border:none;
+  color:#ffffff;
+  font-size:16px;
+  border-radius:30px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#20c05c;
+}
+
+/* Phone row */
+.phone-row{
+  margin-bottom:6px;
+}
+
+/* Link color (future use safe) */
+a{
+  color:#25d366;
+  text-decoration:none;
+}
+
+/* Top WhatsApp header */
+.wa-header{
+  padding:20px 30px;
+  font-size:26px;
+  font-weight:600;
+  color:#25d366;
+}
+
+/* QR login link */
+.qr-login{
+  display:inline-block;
+  margin-top:16px;
+  font-size:14px;
+  color:#25d366;
+  text-decoration:none;
+}

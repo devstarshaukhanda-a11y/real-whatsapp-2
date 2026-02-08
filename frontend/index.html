@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WhatsApp Web UI</title>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI", Arial, sans-serif;
+}
+
+/* LOGIN GUARD */
+body{
+  background:#dadbd5;
+  overflow:hidden;
+}
+
+.app{
+  display:flex;
+  height:100vh;
+  width:100vw;
+  overflow:hidden;
+}
+
+/* LEFT SIDEBAR */
+.wa-sidebar{
+  width:64px;
+  background:#fff;
+  border-right:1px solid #e0e0e0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:10px 0;
+}
+.wa-icon{
+  width:40px;height:40px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#54656f;
+  margin:8px 0;
+  cursor:pointer;
+  position:relative;
+}
+.wa-icon.active{background:#e7fce3;color:#008069}
+.wa-icon:hover{background:#f0f2f5}
+.wa-icon.dot::after{
+  content:"";
+  width:8px;height:8px;
+  background:#25d366;
+  border-radius:50%;
+  position:absolute;
+  top:6px;right:6px;
+}
+.wa-spacer{flex:1}
+.wa-profile{
+  width:40px;height:40px;
+  border-radius:50%;
+  overflow:hidden;
+}
+.wa-profile img{
+  width:100%;height:100%;
+  object-fit:cover;
+}
+
+/* CHAT LIST */
+.chat-list{
+  width:30%;
+  background:#fff;
+  border-right:1px solid #e0e0e0;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  overflow:hidden;
+}
+.header{
+  padding:12px 16px;
+  background:#f0f2f5;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;
+}
+.header .title{font-size:16px;}
+.header .icons{display:flex;align-items:center;gap:12px;color:#54656f;}
+.header .icons span{cursor:pointer;}
+.search{
+  margin:12px;
+  padding:10px 14px;
+  border-radius:20px;
+  border:none;
+  background:#f0f2f5;
+}
+.filters{
+  display:flex;
+  gap:8px;
+  padding:0 12px 10px;
+}
+.filters span{
+  padding:8px 16px;
+  border-radius:18px;
+  border:1px solid #d9d9d9;
+  font-size:13px;
+  color:#3b4a54;
+  cursor:pointer;
+  background:#fff;
+  font-weight:600;
+}
+.filters .active{
+  background:#e7fce3;
+  color:#008069;
+  border-color:#bde8c7;
+}
+
+/* SCROLLABLE CHAT LIST */
+.chat-items{
+  flex:1;
+  overflow-y:auto;
+}
+.chat-items::-webkit-scrollbar{width:6px}
+.chat-items::-webkit-scrollbar-thumb{
+  background:#cfd4d8;
+  border-radius:4px;
+}
+
+.chat{
+  padding:14px;
+  display:flex;
+  gap:12px;
+  cursor:pointer;
+  align-items:center;
+}
+.chat:hover{background:#f0f2f5}
+.chat-avatar{
+  width:48px;height:48px;
+  border-radius:50%;
+  overflow:hidden;
+  background:#dfe5e7;
+}
+.blank-avatar{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  background:#dfe5e7;
+  color:#54656f;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  text-transform:uppercase;
+}
+.blank-avatar.large{
+  width:120px;
+  height:120px;
+  margin:0 auto;
+  font-size:32px;
+}
+.chat.archived{opacity:0.55;}
+.chat-avatar img{
+  width:100%;height:100%;
+  object-fit:cover;
+}
+.chat-info{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+}
+.chat-info b{font-size:15px}
+.chat-status{
+  font-size:12px;
+  color:#667781;
+}
+.chat-meta{
+  margin-left:auto;
+  text-align:right;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  align-items:flex-end;
+  min-width:76px;
+}
+.time{
+  font-size:12px;
+  color:#008069;
+  font-weight:600;
+}
+.unread-badge{
+  background:#25d366;
+  color:#fff;
+  border-radius:12px;
+  padding:2px 8px;
+  font-size:12px;
+  font-weight:700;
+}
+.dropdown{
+  position:absolute;
+  top:100%;
+  right:0;
+  background:#fff;
+  border:1px solid #e0e0e0;
+  border-radius:10px;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+  padding:8px 0;
+  width:240px;
+  z-index:20;
+}
+.dropdown.hidden{display:none;}
+.dropdown .item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 16px;
+  cursor:pointer;
+  color:#111;
+}
+.dropdown .item:hover{background:#f0f2f5;}
+.dropdown .item .material-icons{font-size:20px;color:#54656f;}
+.context-menu{
+  position:fixed;
+  background:#fff;
+  border:1px solid #e0e0e0;
+  border-radius:10px;
+  box-shadow:0 8px 20px rgba(0,0,0,.2);
+  width:230px;
+  z-index:9999;
+  padding:6px 0;
+}
+.context-menu .item{padding:10px 16px;cursor:pointer;display:flex;gap:10px;align-items:center;}
+.context-menu .item:hover{background:#f0f2f5;}
+.fav-dot{
+  width:8px;height:8px;
+  background:#25d366;
+  border-radius:50%;
+  display:inline-block;
+  margin-left:6px;
+}
+
+/* CHAT AREA */
+.chat-area{
+  flex:1;
+  background:#efeae2;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  overflow:hidden;
+}
+.screens-container{
+  flex:1;
+  display:flex;
+  height:100vh;
+  overflow:hidden;
+}
+.screen{
+  flex:1;
+  display:flex;
+  min-width:0;
+}
+.hidden{display:none!important;}
+
+/* CHAT HEADER */
+.chat-header{
+  background:#f0f2f5;
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.chat-header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.chat-header-left img{
+  width:40px;height:40px;
+  border-radius:50%;
+}
+.chat-header-text{
+  display:flex;
+  flex-direction:column;
+}
+.chat-header-text span{font-weight:600}
+.chat-header-text small{
+  font-size:12px;
+  color:#667781;
+}
+.chat-header-actions span{
+  color:#54656f;
+  font-size:22px;
+  margin-left:16px;
+  cursor:pointer;
+}
+
+/* MESSAGES */
+.messages{
+  flex:1;
+  padding:20px;
+  overflow-y:auto;
+}
+.msg{
+  max-width:60%;
+  padding:10px 14px 18px;
+  border-radius:8px;
+  margin-bottom:12px;
+  position:relative;
+  font-size:14px;
+}
+.received{background:#fff}
+.sent{
+  background:#d9fdd3;
+  margin-left:auto;
+}
+.msg small{
+  position:absolute;
+  bottom:4px;
+  right:8px;
+  font-size:11px;
+  color:#667781;
+}
+
+/* INPUT */
+.input-box{
+  background:#f0f2f5;
+  padding:10px;
+  display:flex;
+  gap:10px;
+}
+.input-box input{
+  flex:1;
+  padding:10px;
+  border-radius:20px;
+  border:none;
+  background:#e0e0e0;
+}
+.input-box button{
+  background:#008069;
+  color:#fff;
+  border:none;
+  padding:0 16px;
+  border-radius:50%;
+  cursor:pointer;
+}
+.del{
+  padding:10px 14px;
+  cursor:pointer;
+}
+.del:hover{
+  background:#2a3942;
+}
+
+/* STATUS / CALLS / GROUPS / SETTINGS */
+.panel{
+  flex:1;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  overflow:hidden;
+}
+.panel-head{
+  padding:16px;
+  background:#f0f2f5;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;
+}
+.panel-body{
+  padding:16px;
+  overflow-y:auto;
+  flex:1;
+  background:#f7f7f7;
+}
+.pill{
+  padding:6px 10px;
+  border-radius:12px;
+  background:#e7fce3;
+  color:#008069;
+  font-size:12px;
+  margin-left:8px;
+}
+.status-form,
+.call-actions,
+.group-form,
+.setting-row{
+  background:#fff;
+  border:1px solid #e0e0e0;
+  border-radius:10px;
+  padding:12px;
+  margin-bottom:12px;
+}
+.status-form input,
+.group-form input,
+.group-form textarea,
+.setting-row input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #d0d7dc;
+  margin-top:8px;
+}
+.btn{
+  background:#008069;
+  color:#fff;
+  border:none;
+  padding:10px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+.btn.secondary{background:#e7fce3;color:#075e54}
+.btn.danger{background:#ef4444}
+.status-card,
+.call-card,
+.group-card{
+  background:#fff;
+  border:1px solid #e0e0e0;
+  border-radius:10px;
+  padding:12px;
+  margin-bottom:10px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.status-thumb,
+.group-avatar{
+  width:48px;
+  height:48px;
+  border-radius:10px;
+  background:#dfe5e7;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  color:#54656f;
+}
+.status-thumb img,
+.group-avatar img{width:100%;height:100%;object-fit:cover;}
+.status-meta small,
+.call-meta small,
+.group-meta small{color:#667781;}
+.badge{
+  padding:4px 8px;
+  border-radius:12px;
+  font-size:11px;
+  background:#e0e0e0;
+  color:#111;
+}
+.badge.voice{background:#e7fce3;color:#00664f}
+.badge.video{background:#e0eaff;color:#0b5394}
+.empty{
+  text-align:center;
+  color:#667781;
+  padding:18px 0;
+}
+.call-banner{
+  background:#d9fdd3;
+  color:#0b3c2a;
+  padding:10px 14px;
+  border-radius:10px;
+  margin-bottom:12px;
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+/* GROUP INFO PANEL (WhatsApp-style) */
+.group-info-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:flex;
+  justify-content:flex-end;
+  z-index:1600;
+}
+.group-info-card{
+  width:360px;
+  max-width:100%;
+  background:#fff;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  box-shadow:-4px 0 18px rgba(0,0,0,.2);
+}
+.group-info-header{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 16px;
+  border-bottom:1px solid #e0e0e0;
+  background:#f0f2f5;
+}
+.group-info-close{
+  cursor:pointer;
+  color:#54656f;
+}
+.group-info-title{
+  font-weight:600;
+}
+.group-info-body{
+  padding:16px;
+  overflow-y:auto;
+}
+.group-info-top{
+  display:flex;
+  gap:16px;
+  align-items:center;
+  margin-bottom:16px;
+}
+.group-info-avatar{
+  flex-shrink:0;
+}
+.group-info-text{
+  flex:1;
+}
+.group-info-name{
+  font-size:18px;
+  font-weight:600;
+}
+.group-info-participants{
+  font-size:13px;
+  color:#667781;
+  margin-top:4px;
+}
+.group-info-row{
+  width:100%;
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:10px 0;
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  text-align:left;
+}
+.group-info-row + .group-info-row{
+  border-top:1px solid #f0f2f5;
+}
+.group-info-row .material-icons{
+  color:#54656f;
+}
+.group-info-row-text{
+  flex:1;
+}
+.group-info-row-title{
+  font-size:14px;
+  font-weight:500;
+}
+.group-info-row-sub{
+  font-size:12px;
+  color:#667781;
+  margin-top:2px;
+}
+.group-info-section{
+  margin-top:16px;
+  border-top:1px solid #e0e0e0;
+  padding-top:10px;
+}
+.group-info-section-title{
+  font-size:13px;
+  color:#667781;
+  margin-bottom:8px;
+}
+.group-member-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 0;
+}
+.group-member-avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  overflow:hidden;
+  background:#dfe5e7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.group-member-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.group-member-meta{
+  flex:1;
+}
+.group-member-name{
+  font-size:14px;
+  font-weight:500;
+}
+.group-member-about{
+  font-size:12px;
+  color:#667781;
+}
+.group-info-exit{
+  color:#ef4444;
+}
+
+/* DARK THEME TOGGLE */
+body.dark{background:#0b141a;color:#e9edef;}
+body.dark .chat-list,
+body.dark .panel{background:#111b21;color:#e9edef;border-color:#233138;}
+body.dark .chat-header,
+body.dark .header,
+body.dark .panel-head{background:#202c33;color:#e9edef;}
+body.dark .chat-area,
+body.dark .panel-body{background:#0b141a;}
+body.dark .chat,
+body.dark .status-card,
+body.dark .call-card,
+body.dark .group-card{background:#111b21;border-color:#233138;color:#e9edef;}
+body.dark .filters span,
+body.dark .status-form,
+body.dark .group-form,
+body.dark .call-actions,
+body.dark .setting-row{background:#111b21;border-color:#233138;color:#e9edef;}
+body.dark .search,
+body.dark .status-form input,
+body.dark .group-form input,
+body.dark .group-form textarea{background:#202c33;color:#e9edef;border-color:#233138;}
+body.dark .input-box{background:#202c33;}
+body.dark .input-box input{background:#111b21;color:#e9edef;}
+
+
+/* ATTACH MENU */
+.attach-menu{
+  position:absolute;
+  bottom:60px;
+  left:10px;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+  width:220px;
+  z-index:9999;
+  padding:6px 0;
+}
+.attach-menu.hidden{display:none;}
+
+.attach-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 14px;
+  cursor:pointer;
+}
+.attach-item:hover{
+  background:#f0f2f5;
+}
+.attach-item .material-icons{
+  color:#25d366;
+}
+
+</style>
+
+<script>
+  /* 🔐 LOGIN GUARD (VERY IMPORTANT) */
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  if (isLoggedIn !== "true") {
+    window.location.href = "/login.html";
+  }
+</script>
+
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="wa-sidebar">
+    <div class="wa-icon active" id="btn-chat" title="Chats"><span class="material-icons">chat</span></div>
+    <div class="wa-icon dot" id="btn-status" title="Status"><span class="material-icons">donut_large</span></div>
+    <div class="wa-icon dot" id="btn-communities" title="Communities"><span class="material-icons">group_work</span></div>
+    <div class="wa-icon" id="btn-calls" title="Calls"><span class="material-icons">call</span></div>
+    <div class="wa-spacer"></div>
+    <div class="wa-icon" id="btn-settings" title="Settings"><span class="material-icons settings-btn">settings</span></div>
+    <div class="wa-icon" title="Logout" onclick="doLogout()">
+      <span class="material-icons">logout</span>
+    </div>
+    <div class="wa-profile" id="btn-profile"><img src="https://i.pravatar.cc/100?img=11"></div>
+  </div>
+
+  <div class="screens-container">
+
+    <!-- CHAT SCREEN -->
+    <div class="screen chat-screen">
+      <!-- CHAT LIST -->
+      <div class="chat-list">
+        <div class="header">
+          <span class="title">Chats</span>
+          <div class="icons">
+            <span class="material-icons" id="newChatBtn">add_box</span>
+            <span class="material-icons" id="chatMenuBtn">more_vert</span>
+          </div>
+          <div class="dropdown hidden" id="chatMenu">
+            <div class="item" data-action="new-group"><span class="material-icons">group_add</span>New group</div>
+            <div class="item" data-action="new-community"><span class="material-icons">group_work</span>New community</div>
+            <div class="item" data-action="starred"><span class="material-icons">star</span>Starred messages</div>
+            <div class="item" data-action="select-chats"><span class="material-icons">check_box</span>Select chats</div>
+            <div class="item" data-action="mark-all-read"><span class="material-icons">drafts</span>Mark all as read</div>
+            <div class="item" data-action="app-lock"><span class="material-icons">lock</span>App lock</div>
+            <div class="item" data-action="logout"><span class="material-icons">logout</span>Log out</div>
+          </div>
+        </div>
+        <input class="search" id="searchInput" placeholder="Search or start a new chat">
+        <div class="filters">
+          <span class="active" id="filter-all">All</span>
+          <span id="filter-unread">Unread</span>
+          <span id="filter-fav">Favourites</span>
+          <span id="filter-groups">Groups</span>
+        </div>
+        <div class="chat-items" id="chatItems"></div>
+      </div>
+
+      <!-- CHAT AREA -->
+      <div class="chat-area">
+        <div class="chat-header">
+          <div class="chat-header-left">
+            <img id="chatUserAvatar">
+            <div class="chat-header-text">
+              <span id="chatUserName">Select a chat</span>
+              <small id="chatUserStatus"></small>
+            </div>
+          </div>
+          <div class="chat-header-actions">
+            <span class="material-icons call-btn" id="quickVideo">videocam</span>
+            <span class="material-icons call-btn" id="quickVoice">call</span>
+            <span class="material-icons">search</span>
+            <span class="material-icons" id="chatActionMenuBtn">more_vert</span>
+            <div class="dropdown hidden" id="chatActionMenu" style="right:0;top:48px">
+              <div class="item" data-action="group-info"><span class="material-icons">info</span>Group info</div>
+              <div class="item" data-action="select-messages"><span class="material-icons">check_box</span>Select messages</div>
+              <div class="item" data-action="mute"><span class="material-icons">notifications_off</span>Mute notifications</div>
+              <div class="item" data-action="disappearing"><span class="material-icons">timelapse</span>Disappearing messages</div>
+              <div class="item" data-action="favourite"><span class="material-icons">favorite_border</span>Add to favourites</div>
+              <div class="item" data-action="close-chat"><span class="material-icons">close</span>Close chat</div>
+              <div class="item" data-action="clear-chat"><span class="material-icons">delete_sweep</span>Clear chat</div>
+              <div class="item" data-action="exit-group"><span class="material-icons">exit_to_app</span>Exit group</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="messages" id="messages"></div>
+
+       <div class="input-box" style="position:relative">
+
+  <!-- ATTACH BUTTON -->
+  <span id="attachBtn" class="material-icons"
+        style="cursor:pointer;color:#54656f;font-size:26px;margin-left:6px">
+    attach_file
+  </span>
+
+  <input id="messageInput" placeholder="Type a message">
+
+  <button id="sendBtn">➤</button>
+
+  <!-- ATTACH MENU (HIDDEN) -->
+  <div id="attachMenu" class="attach-menu hidden">
+    <div class="attach-item" data-type="document">
+      <span class="material-icons">description</span>
+      <span>Document</span>
+    </div>
+
+    <div class="attach-item" data-type="image">
+      <span class="material-icons">image</span>
+      <span>Photos & videos</span>
+    </div>
+
+    <div class="attach-item" data-type="camera">
+      <span class="material-icons">photo_camera</span>
+      <span>Camera</span>
+    </div>
+
+    <div class="attach-item" data-type="audio">
+      <span class="material-icons">headphones</span>
+      <span>Audio</span>
+    </div>
+
+    <div class="attach-item" data-type="contact">
+      <span class="material-icons">person</span>
+      <span>Contact</span>
+    </div>
+
+    <div class="attach-item" data-type="poll">
+      <span class="material-icons">poll</span>
+      <span>Poll</span>
+    </div>
+
+    <div class="attach-item" data-type="event">
+      <span class="material-icons">event</span>
+      <span>Event</span>
+    </div>
+
+    <div class="attach-item" data-type="sticker">
+      <span class="material-icons">emoji_emotions</span>
+      <span>New sticker</span>
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+
+    <!-- CALLS SCREEN -->
+    <div class="screen calls-screen hidden">
+      <div class="panel">
+        <div class="panel-head">
+          <span>Calls</span>
+          <div>
+            <span class="pill">voice</span>
+            <span class="pill" style="background:#e0eaff;color:#0b5394">video</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="call-banner" id="callBanner">
+            <div><b id="callBannerTitle"></b><br><small id="callBannerMeta"></small></div>
+            <button class="btn danger" id="endCallBtn">End</button>
+          </div>
+
+          <div class="call-actions">
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn" id="startVoiceCall">Start voice call</button>
+              <button class="btn secondary" id="startVideoCall">Start video call</button>
+            </div>
+            <small style="color:#667781">Select a chat first and tap to initiate a simulated call.</small>
+          </div>
+
+          <div id="callLog" class="call-log"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATUS SCREEN -->
+    <div class="screen status-screen hidden">
+      <div class="panel">
+        <div class="panel-head">
+          <span>Status</span>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="pill">24h</span>
+            <span class="material-icons" id="statusAddBtn" style="cursor:pointer;color:#54656f">add</span>
+            <span class="material-icons" id="statusMoreBtn" style="cursor:pointer;color:#54656f">more_vert</span>
+          </div>
+          <div class="dropdown hidden" id="statusMoreMenu" style="right:10px;top:44px">
+            <div class="item" data-action="status-clear"><span class="material-icons">delete</span>Clear all</div>
+            <div class="item" data-action="status-refresh"><span class="material-icons">refresh</span>Refresh feed</div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="status-form">
+            <label for="statusText"><b>Add status</b></label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+              <button class="btn secondary" id="statusPhotoTrigger" type="button">Photos & videos</button>
+              <button class="btn secondary" id="statusTextTrigger" type="button">Text</button>
+              <button class="btn secondary" id="statusAudioTrigger" type="button">Audio</button>
+            </div>
+            <input id="statusText" placeholder="Caption or text status" style="margin-top:8px">
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button class="btn" id="addStatusBtn" type="button">Add</button>
+              <button class="btn secondary" id="clearStatusesBtn" type="button">Clear all</button>
+            </div>
+            <input type="file" id="statusMediaInput" accept="image/*,video/*" style="display:none">
+            <input type="file" id="statusAudioInput" accept="audio/*" style="display:none">
+            <small id="statusMediaLabel" style="color:#667781;display:block;margin-top:8px"></small>
+          </div>
+          <div id="statusList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GROUPS / CONTACTS SCREEN -->
+    <div class="screen communities-screen hidden">
+      <div class="panel">
+        <div class="panel-head">
+          <span>Communities</span>
+          <span class="pill">beta</span>
+        </div>
+        <div class="panel-body">
+          <div class="group-form">
+            <label><b>Create group</b></label>
+            <input id="groupName" placeholder="Group name">
+            <textarea id="groupMembers" rows="2" placeholder="Members (comma separated numbers)"></textarea>
+            <button class="btn secondary" id="pickGroupMembers" type="button" style="margin-top:8px">Select members</button>
+            <button class="btn" id="createGroupBtn" style="margin-top:10px">Create</button>
+          </div>
+          <div id="groupList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS SCREEN -->
+    <div class="screen settings-screen hidden">
+      <div class="panel">
+        <div class="panel-head">
+          <span>Settings</span>
+          <span class="pill">Profile</span>
+        </div>
+        <div class="panel-body">
+          <input id="settingsSearch" class="search" placeholder="Search settings">
+          <div class="setting-row" id="settingsProfileCard" style="display:flex;align-items:center;gap:12px;cursor:pointer">
+            <div class="status-thumb" id="settingsProfilePic" style="border-radius:50%;width:48px;height:48px;overflow:hidden">
+              <span class="material-icons">person</span>
+            </div>
+            <div>
+              <div id="settingsProfileName" style="font-weight:700">You</div>
+              <div id="settingsProfileAbout" style="color:#667781;font-size:13px">Hey there! I am using WhatsApp.</div>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <b>General</b>
+            <div style="color:#667781;font-size:13px">Startup and close</div>
+          </div>
+          <div class="setting-row">
+            <b>Account</b>
+            <div style="color:#667781;font-size:13px">Security notifications, account info</div>
+          </div>
+          <div class="setting-row">
+            <b>Privacy</b>
+            <div style="color:#667781;font-size:13px">Blocked contacts, disappearing messages</div>
+          </div>
+          <div class="setting-row">
+            <b>Chats</b>
+            <div style="color:#667781;font-size:13px">Theme, wallpaper, chat settings</div>
+          </div>
+          <div class="setting-row">
+            <b>Video & voice</b>
+            <div style="color:#667781;font-size:13px">Camera, microphone & speakers</div>
+          </div>
+          <div class="setting-row">
+            <b>Notifications</b>
+            <div style="color:#667781;font-size:13px">Message notifications</div>
+          </div>
+          <div class="setting-row">
+            <b>Theme</b>
+            <div style="margin-top:8px;display:flex;gap:10px;align-items:center">
+              <label><input type="radio" name="theme" value="light" checked> Light</label>
+              <label><input type="radio" name="theme" value="dark"> Dark</label>
+            </div>
+          </div>
+          <button class="btn secondary" id="openProfileFromSettings" style="width:100%;margin-top:8px">Open profile</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NEW CHAT SHEET -->
+  <div id="newChatOverlay" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:1200">
+    <div style="background:#fff;width:340px;border-radius:16px;overflow:hidden;box-shadow:0 12px 28px rgba(0,0,0,.2)">
+      <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:#f0f2f5">
+        <span class="material-icons" id="closeNewChat" style="cursor:pointer">arrow_back</span>
+        <div style="font-weight:700">New chat</div>
+      </div>
+      <div style="padding:12px 16px">
+        <div style="display:flex;align-items:center;background:#f0f2f5;border-radius:10px;padding:8px 10px;gap:8px;margin-bottom:12px">
+          <span class="material-icons" style="color:#54656f">search</span>
+          <input id="newChatSearch" placeholder="Search name or number" style="border:none;background:transparent;flex:1;outline:none">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px" id="newChatShortcuts">
+          <div class="item" data-action="new-group" style="display:flex;align-items:center;gap:12px;cursor:pointer">
+            <div style="width:42px;height:42px;border-radius:50%;background:#e7fce3;color:#008069;display:flex;align-items:center;justify-content:center;font-weight:700">👥</div>
+            <div>
+              <div style="font-weight:700">New group</div>
+              <div style="color:#667781;font-size:13px">Create a group instantly</div>
+            </div>
+          </div>
+          <div class="item" data-action="new-contact" style="display:flex;align-items:center;gap:12px;cursor:pointer">
+            <div style="width:42px;height:42px;border-radius:50%;background:#e0eaff;color:#0b5394;display:flex;align-items:center;justify-content:center;font-weight:700">➕</div>
+            <div>
+              <div style="font-weight:700">New contact</div>
+              <div style="color:#667781;font-size:13px">Save and start chatting</div>
+            </div>
+          </div>
+          <div class="item" data-action="new-community" style="display:flex;align-items:center;gap:12px;cursor:pointer">
+            <div style="width:42px;height:42px;border-radius:50%;background:#ffe8c2;color:#c47d00;display:flex;align-items:center;justify-content:center;font-weight:700">🌐</div>
+            <div>
+              <div style="font-weight:700">New community</div>
+              <div style="color:#667781;font-size:13px">Start a community</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script src="script.js"></script>
+<script src="groups.js"></script>
+
+<!-- GROUP CREATE MODAL -->
+<div id="groupCreateModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:1300">
+  <div style="background:#fff;width:420px;max-height:70vh;overflow:auto;border-radius:12px;padding:16px">
+    <div style="font-weight:700;margin-bottom:12px">Create group</div>
+    <input id="modalGroupName" placeholder="Group name" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;margin-bottom:8px">
+    <textarea id="modalGroupMembers" rows="3" placeholder="Members (comma separated numbers)" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:4px;margin-bottom:8px"></textarea>
+    <button class="btn secondary" id="modalPickMembers" type="button" style="margin-bottom:8px">Select members</button>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn secondary" id="modalCancel" type="button">Cancel</button>
+      <button class="btn" id="modalCreateGroup" type="button">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- FILE INPUTS -->
+<input type="file" id="fileDocument" style="display:none">
+<input type="file" id="fileImage" accept="image/*,video/*" style="display:none">
+<input type="file" id="fileAudio" accept="audio/*" style="display:none">
+<!-- Document input -->
+<input
+  type="file"
+  id="docInput"
+  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+  style="display:none"
+/>
+
+<!-- Photos & Videos input -->
+<input
+  type="file"
+  id="mediaInput"
+  accept="image/*,video/*"
+  style="display:none"
+/>
+
+
+
+</body>
+</html>

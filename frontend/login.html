@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WhatsApp Web – Log in</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+body{
+  background:#fef7f0;
+  height:100vh;
+}
+
+/* TOP BAR */
+.top-bar{
+  height:60px;
+  padding:0 24px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.top-bar img{
+  width:32px;
+}
+
+.top-bar span{
+  color:#25d366;
+  font-size:22px;
+  font-weight:600;
+}
+
+/* MAIN WRAPPER */
+.wrapper{
+  display:flex;
+  justify-content:center;
+  margin-top:30px;
+}
+
+/* CARD */
+.card{
+  width:960px;
+  background:#fff;
+  border-radius:16px;
+  padding:32px 40px;
+  box-shadow:0 4px 20px rgba(0,0,0,.08);
+}
+
+/* DOWNLOAD BANNER */
+.download{
+  border:1px solid #e0e0e0;
+  border-radius:12px;
+  padding:20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:32px;
+}
+
+.download-left{
+  display:flex;
+  gap:16px;
+  align-items:center;
+}
+
+.download-left img{
+  width:48px;
+}
+
+.download h4{
+  font-size:16px;
+}
+
+.download p{
+  font-size:14px;
+  color:#667781;
+}
+
+.download button{
+  background:#25d366;
+  color:#fff;
+  border:none;
+  padding:10px 22px;
+  border-radius:24px;
+  font-size:14px;
+  cursor:pointer;
+}
+
+/* CONTENT */
+.content{
+  display:flex;
+  justify-content:space-between;
+  gap:40px;
+}
+
+.steps h2{
+  font-size:24px;
+  margin-bottom:20px;
+}
+
+.steps ol{
+  padding-left:20px;
+}
+
+.steps li{
+  margin-bottom:14px;
+  font-size:15px;
+  color:#3b4a54;
+}
+
+.steps a{
+  display:inline-block;
+  margin-top:18px;
+  color:#25d366;
+  font-size:14px;
+  text-decoration:none;
+}
+
+/* QR */
+.qr{
+  text-align:center;
+}
+
+.qr img{
+  width:260px;
+}
+
+.keep{
+  margin-top:14px;
+  font-size:14px;
+  color:#3b4a54;
+}
+
+.keep input{
+  accent-color:#25d366;
+}
+</style>
+
+<script>
+  // 🔥 Login page par aate hi old session clear
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("phone");
+</script>
+
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="top-bar">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
+  <span>WhatsApp</span>
+</div>
+
+<!-- MAIN -->
+<div class="wrapper">
+  <div class="card">
+
+    <!-- DOWNLOAD -->
+    <div class="download">
+      <div class="download-left">
+        <img src="https://cdn-icons-png.flaticon.com/512/888/888882.png">
+        <div>
+          <h4>Download WhatsApp for Windows</h4>
+          <p>Make calls, share your screen and get a faster experience.</p>
+        </div>
+      </div>
+      <button>Download</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- STEPS -->
+      <div class="steps">
+        <h2>Steps to log in</h2>
+        <ol>
+          <li>Open WhatsApp on your phone</li>
+          <li>Tap Menu <b>⋮</b> on Android, or Settings on iPhone</li>
+          <li>Tap <b>Linked devices</b>, then <b>Link a device</b></li>
+          <li>Scan the QR code to confirm</li>
+        </ol>
+
+<a href="phone-number.html">Log in with phone number</a>
+      </div>
+
+      <!-- QR -->
+      <div class="qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=whatsapp-login">
+        <div class="keep">
+          <input type="checkbox" checked> Stay logged in on this browser
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

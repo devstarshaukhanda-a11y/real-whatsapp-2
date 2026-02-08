@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Enter phone number</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+  <!-- TOP LEFT WHATSAPP -->
+<div class="wa-header">
+  WhatsApp
+</div>
+
+<div class="container">
+  <div class="card single">
+    <h2>Enter your phone number</h2>
+    <p>WhatsApp will send an OTP to verify your number.</p>
+
+    <label for="countryCode">Country</label>
+    <select id="countryCode">
+      <option value="+91" selected>India (+91)</option>
+      <option value="+1">United States (+1)</option>
+      <option value="+44">United Kingdom (+44)</option>
+      <option value="+61">Australia (+61)</option>
+      <option value="+971">United Arab Emirates (+971)</option>
+      <option value="+880">Bangladesh (+880)</option>
+      <option value="+975">Bhutan (+975)</option>
+      <option value="+1">Canada (+1)</option>
+      <option value="+86">China (+86)</option>
+      <option value="+45">Denmark (+45)</option>
+      <option value="+20">Egypt (+20)</option>
+      <option value="+358">Finland (+358)</option>
+      <option value="+33">France (+33)</option>
+      <option value="+49">Germany (+49)</option>
+      <option value="+30">Greece (+30)</option>
+      <option value="+852">Hong Kong (+852)</option>
+      <option value="+62">Indonesia (+62)</option>
+      <option value="+353">Ireland (+353)</option>
+      <option value="+972">Israel (+972)</option>
+      <option value="+39">Italy (+39)</option>
+      <option value="+81">Japan (+81)</option>
+      <option value="+254">Kenya (+254)</option>
+      <option value="+60">Malaysia (+60)</option>
+      <option value="+52">Mexico (+52)</option>
+      <option value="+977">Nepal (+977)</option>
+      <option value="+31">Netherlands (+31)</option>
+      <option value="+64">New Zealand (+64)</option>
+      <option value="+92">Pakistan (+92)</option>
+      <option value="+63">Philippines (+63)</option>
+      <option value="+48">Poland (+48)</option>
+      <option value="+351">Portugal (+351)</option>
+      <option value="+974">Qatar (+974)</option>
+      <option value="+7">Russia (+7)</option>
+      <option value="+966">Saudi Arabia (+966)</option>
+      <option value="+65">Singapore (+65)</option>
+      <option value="+27">South Africa (+27)</option>
+      <option value="+82">South Korea (+82)</option>
+      <option value="+34">Spain (+34)</option>
+      <option value="+94">Sri Lanka (+94)</option>
+      <option value="+46">Sweden (+46)</option>
+      <option value="+41">Switzerland (+41)</option>
+      <option value="+66">Thailand (+66)</option>
+      <option value="+90">Turkey (+90)</option>
+      <option value="+256">Uganda (+256)</option>
+      <option value="+380">Ukraine (+380)</option>
+      <option value="+598">Uruguay (+598)</option>
+      <option value="+58">Venezuela (+58)</option>
+      <option value="+84">Vietnam (+84)</option>
+      <!-- more countries can be added here as needed -->
+    </select>
+
+    <div class="phone-row">
+      <input id="phone" type="tel" placeholder="Phone number">
+    </div>
+
+    <button onclick="goToOTP()">Next</button>
+    <a href="login.html" class="qr-login">← Log in with QR code</a>
+
+  </div>
+</div>
+
+<script src="login.js"></script>
+
+</body>
+</html>
