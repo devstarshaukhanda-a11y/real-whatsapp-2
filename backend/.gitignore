@@ -1,0 +1,8 @@
+node_modules
+.env
+uploads
+dist
+build
+.expo
+.expo-shared
+npm-debug.log
