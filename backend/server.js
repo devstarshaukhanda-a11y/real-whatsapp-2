@@ -281,9 +281,11 @@ app.get("/profile/:phone", async (req, res) => {
 app.post("/profile/upload", upload.single("photo"), async (req, res) => {
   const { phone, about, name } = req.body;
 
-  const photoUrl = req.file
-    ? `http://localhost:3000/uploads/${req.file.filename}`
-    : undefined;
+  const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+
+const photoUrl = req.file
+  ? `${BASE_URL}/uploads/${req.file.filename}`
+  : undefined;
 
   const user = await User.findOneAndUpdate(
     { phone },
@@ -918,6 +920,8 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 // ================= START =================
-server.listen(3000, () => {
-  console.log("🚀 Server running on http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
