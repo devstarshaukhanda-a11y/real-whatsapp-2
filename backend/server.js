@@ -15,7 +15,18 @@ const messageRoutes = require("./routes/messages");
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server(server, {
+  cors: {
+    origin: [
+      "https://whatsapp-chat.leavecode.co.in",
+      "http://localhost:3000",
+      "http://localhost:8081"
+    ],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 
@@ -30,7 +41,15 @@ function normalize(phone) {
 }
 
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://whatsapp-chat.leavecode.co.in",
+    "http://localhost:3000",
+    "http://localhost:8081"
+  ],
+  credentials: true
+}));
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
  

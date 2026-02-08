@@ -2,13 +2,16 @@
 const myPhone = localStorage.getItem("phone") || prompt("Enter phone number");
 localStorage.setItem("phone", myPhone);
 
-const socket = io("http://localhost:3000", {
-  query: { phone: myPhone }, // 🔥 VERY IMPORTANT
+import { io } from "socket.io-client";
+
+const socket = io("https://whatsapp-chat.leavecode.co.in", {
+  query: { phone: myPhone },     // user identify
+  transports: ["websocket"],     // 🔥 force websocket
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
-  timeout: 20000
+  timeout: 20000,
 });
 
 
