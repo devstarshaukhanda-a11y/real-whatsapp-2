@@ -47,7 +47,7 @@ app.use("/api/users", userRoutes);
 
 
 //  ================= FRONTEND =================
-// app.use(express.static(path.join(__dirname, "../frontend")));
+ app.use(express.static(path.join(__dirname, "../frontend")));
 
 //  ROOT → LOGIN PAGE ONLY
 // app.get("/", (req, res) => {
